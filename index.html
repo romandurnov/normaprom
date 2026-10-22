@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NormaProm — нормы металла и подготовка производства</title>
+<meta name="description" content="Роман Дурнов, технолог. Считаю, сколько металла и часов теряет производство, и навожу порядок в нормах и подготовке производства. Бесплатный разбор одного изделия.">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --card: #ffffff;
+    --ink: #1d2327;
+    --muted: #5b646b;
+    --line: #e3e0d8;
+    --accent: #1f5f5b;
+    --accent-soft: #e8f1ef;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 28px 0 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .logo { font-weight: 700; letter-spacing: .02em; font-size: 18px; }
+  .logo span { color: var(--accent); }
+  header a { color: var(--muted); text-decoration: none; font-size: 15px; }
+  header a:hover { color: var(--accent); }
+  h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.2; margin: 40px 0 16px; letter-spacing: -.01em; }
+  .lead { font-size: 19px; color: var(--muted); margin: 0 0 32px; }
+  h2 { font-size: 22px; margin: 48px 0 14px; }
+  .offer {
+    background: var(--accent-soft);
+    border: 1px solid #cfe2de;
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+  }
+  .offer h2 { margin-top: 0; }
+  .offer p { margin: 0 0 12px; }
+  .btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin: 6px 10px 6px 0;
+  }
+  .btn.ghost { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+  .btn:hover { filter: brightness(1.08); }
+  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; display: grid; gap: 12px; }
+  ol.steps li {
+    counter-increment: s;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px 16px 60px;
+    position: relative;
+  }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute; left: 18px; top: 16px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: grid; place-items: center; font-weight: 700; font-size: 15px;
+  }
+  ol.steps b { display: block; }
+  ol.steps small { color: var(--muted); font-size: 15px; }
+  ul.list { padding-left: 20px; margin: 0; }
+  ul.list li { margin: 6px 0; }
+  .note { color: var(--muted); font-size: 15px; }
+  footer { margin: 56px 0 32px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  a { color: var(--accent); }
+  @media (max-width: 480px) {
+    body { font-size: 16px; }
+    .lead { font-size: 17px; }
+    .offer { padding: 18px; }
+    .btn { display: block; text-align: center; margin: 8px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">Norma<span>Prom</span></div>
+    <a href="mailto:durnov.r@normaprom.ru">durnov.r@normaprom.ru</a>
+  </header>
+
+  <h1>Считаю, сколько металла и часов теряет ваше производство — в рублях</h1>
+  <p class="lead">Роман Дурнов, технолог. Нормы расхода металла, раскрой, нормы времени и подготовка производства для заводов на 20–300 человек.</p>
+
+  <section class="offer">
+    <h2>Бесплатный разбор одного изделия</h2>
+    <p>Пришлите чертёж или dxf, вашу норму расхода металла и фактическое списание за квартал.</p>
+    <p>Через 2–3 дня покажу, сколько металла теряется на этом изделии в рублях за год, почему и что можно поправить. Без обязательств.</p>
+    <a class="btn" href="mailto:durnov.r@normaprom.ru?subject=Разбор%20изделия">Написать на почту</a>
+  </section>
+
+  <h2>Где обычно теряются деньги</h2>
+  <ul class="list">
+    <li>Норма металла посчитана по массе детали, без раскроя, реза и остатков.</li>
+    <li>Деловые остатки листа и проката не учитываются и уходят в лом.</li>
+    <li>Нормы времени без наладки — на малых партиях цена детали занижена.</li>
+    <li>Час работы считают по зарплате рабочего, без станка, инструмента и цеха.</li>
+    <li>Новое изделие запускают «как получится»: нормы и документы — потом.</li>
+  </ul>
+
+  <h2>Как работаю</h2>
+  <ol class="steps">
+    <li><b>Разбор одного изделия</b><small>Бесплатно, 2–3 дня. Понятно, есть ли смысл идти дальше.</small></li>
+    <li><b>Диагностика 5–10 изделий</b><small>3–4 недели. Нормы против факта, раскрой, время. Отчёт: потери в рублях за год и первоочередные меры.</small></li>
+    <li><b>Наведение порядка</b><small>Нормы на номенклатуру, карты раскроя, маршруты, порядок подготовки производства. Обучаю ваших сотрудников, чтобы дальше всё работало без меня.</small></li>
+  </ol>
+
+  <h2>Обо мне</h2>
+  <p>15 лет в технологической подготовке производства. Руководил технологическими подразделениями в крупной промышленной группе, запускал новое производство. Сварка, термообработка, механообработка, нормирование материалов и труда.</p>
+  <p class="note">Работаю удалённо и с выездом по Челябинской области. Данные клиента не передаю третьим лицам и не публикую без письменного согласия.</p>
+
+  <footer>
+    Роман Дурнов · <a href="mailto:durnov.r@normaprom.ru">durnov.r@normaprom.ru</a>
+  </footer>
+
+</div>
+</body>
+</html>
