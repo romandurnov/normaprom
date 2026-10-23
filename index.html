@@ -7,124 +7,843 @@
 <meta name="description" content="Роман Дурнов, технолог. Считаю, сколько металла и часов теряет производство, и навожу порядок в нормах и подготовке производства. Бесплатный разбор одного изделия.">
 <style>
   :root {
-    --bg: #fbfaf7;
+    --bg: #f7f6f2;
     --card: #ffffff;
-    --ink: #1d2327;
-    --muted: #5b646b;
-    --line: #e3e0d8;
+    --ink: #1a2024;
+    --muted: #59636a;
+    --line: #e2dfd6;
     --accent: #1f5f5b;
-    --accent-soft: #e8f1ef;
+    --accent-2: #2f8a83;
+    --accent-soft: #e6f0ee;
+    --warn: #c0612b;
+    --warn-soft: #fbeee5;
+    --steel: #c9d1d6;
+    --radius: 16px;
   }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--ink);
     font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
-  header { padding: 28px 0 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-  .logo { font-weight: 700; letter-spacing: .02em; font-size: 18px; }
-  .logo span { color: var(--accent); }
-  header a { color: var(--muted); text-decoration: none; font-size: 15px; }
-  header a:hover { color: var(--accent); }
-  h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.2; margin: 40px 0 16px; letter-spacing: -.01em; }
-  .lead { font-size: 19px; color: var(--muted); margin: 0 0 32px; }
-  h2 { font-size: 22px; margin: 48px 0 14px; }
-  .offer {
-    background: var(--accent-soft);
-    border: 1px solid #cfe2de;
-    border-radius: 14px;
-    padding: 24px 24px 20px;
-  }
-  .offer h2 { margin-top: 0; }
-  .offer p { margin: 0 0 12px; }
-  .btn {
-    display: inline-block;
-    background: var(--accent);
-    color: #fff;
-    text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-weight: 600;
-    margin: 6px 10px 6px 0;
-  }
-  .btn.ghost { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
-  .btn:hover { filter: brightness(1.08); }
-  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; display: grid; gap: 12px; }
-  ol.steps li {
-    counter-increment: s;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 16px 18px 16px 60px;
-    position: relative;
-  }
-  ol.steps li::before {
-    content: counter(s);
-    position: absolute; left: 18px; top: 16px;
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--accent); color: #fff;
-    display: grid; place-items: center; font-weight: 700; font-size: 15px;
-  }
-  ol.steps b { display: block; }
-  ol.steps small { color: var(--muted); font-size: 15px; }
-  ul.list { padding-left: 20px; margin: 0; }
-  ul.list li { margin: 6px 0; }
-  .note { color: var(--muted); font-size: 15px; }
-  footer { margin: 56px 0 32px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
   a { color: var(--accent); }
+
+  /* шапка */
+  header.top {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(247,246,242,.88);
+    backdrop-filter: saturate(1.4) blur(10px);
+    -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s;
+  }
+  header.top.scrolled { border-bottom-color: var(--line); }
+  header.top .wrap { display: flex; justify-content: space-between; align-items: center; height: 64px; gap: 12px; }
+  .logo { font-weight: 800; font-size: 19px; letter-spacing: .01em; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+  .logo span { color: var(--accent); }
+  .logo svg { flex: none; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 15px; margin-left: 22px; }
+  nav a:hover { color: var(--accent); }
+  nav .btn { margin: 0 0 0 22px; padding: 9px 16px; font-size: 15px; color: #fff; }
+
+  /* кнопки */
+  .btn {
+    display: inline-block; background: var(--accent); color: #fff; text-decoration: none;
+    padding: 14px 22px; border-radius: 12px; font-weight: 600;
+    box-shadow: 0 6px 18px -8px rgba(31,95,91,.6);
+    transition: transform .2s, box-shadow .2s, background .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(31,95,91,.7); background: var(--accent-2); }
+  .btn.ghost { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); box-shadow: none; }
+  .btn.ghost:hover { background: var(--accent-soft); }
+
+  /* первый экран */
+  .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding: 64px 0 40px; }
+  .eyebrow { display: inline-block; font-size: 14px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 5px 12px; border-radius: 99px; margin-bottom: 18px; }
+  h1 { font-size: clamp(30px, 4.6vw, 50px); line-height: 1.12; margin: 0 0 18px; letter-spacing: -.02em; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lead { font-size: 19px; color: var(--muted); margin: 0 0 28px; max-width: 34em; }
+  .hero .btn { margin: 0 10px 10px 0; }
+
+  /* карточка «норма против факта» */
+  .gauge {
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 26px;
+    box-shadow: 0 30px 60px -40px rgba(26,32,36,.35);
+  }
+  .gauge h3 { margin: 0 0 4px; font-size: 16px; }
+  .gauge .sub { color: var(--muted); font-size: 14px; margin: 0 0 22px; }
+  .bar-row { margin-bottom: 16px; }
+  .bar-row .lbl { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+  .bar-row .lbl b { font-variant-numeric: tabular-nums; }
+  .bar { height: 14px; background: #eeece6; border-radius: 99px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: var(--steel); transition: width 1.4s cubic-bezier(.2,.8,.2,1); }
+  .bar i.n { background: var(--accent-2); }
+  .bar i.f { background: var(--warn); }
+  .gap {
+    margin-top: 20px; padding: 14px 16px; border-radius: 12px; background: var(--warn-soft);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .gap span { font-size: 14px; color: #7a3a14; }
+  .gap b { font-size: 24px; color: var(--warn); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tag { font-size: 12px; color: var(--muted); margin-top: 12px; }
+
+  /* разделы */
+  section { padding: 56px 0; }
+  h2 { font-size: clamp(26px, 3.4vw, 36px); line-height: 1.2; margin: 0 0 12px; letter-spacing: -.01em; }
+  .sec-lead { color: var(--muted); font-size: 18px; margin: 0 0 32px; max-width: 40em; }
+
+  /* где теряются деньги */
+  .leaks { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+  .leak {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+  }
+  .leak:hover { transform: translateY(-4px); box-shadow: 0 18px 36px -24px rgba(26,32,36,.4); border-color: #cfe2de; }
+  .leak .ico { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); display: grid; place-items: center; margin-bottom: 14px; }
+  .leak b { display: block; margin-bottom: 6px; line-height: 1.35; }
+  .leak p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  /* калькулятор */
+  .calc {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+  }
+  .calc .in { padding: 30px; }
+  .calc .out { padding: 30px; background: var(--accent); color: #fff; display: flex; flex-direction: column; justify-content: center; }
+  .field { margin-bottom: 22px; }
+  .field label { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .field label output { color: var(--accent); font-variant-numeric: tabular-nums; }
+  .field small { display: block; color: var(--muted); font-size: 13px; margin-top: 4px; }
+  input[type=range] { width: 100%; accent-color: var(--accent); height: 28px; }
+  input[type=number] {
+    width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fcfcfa;
+  }
+  input[type=number]:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  .out .k { font-size: 15px; opacity: .85; }
+  .out .big { font-size: clamp(34px, 5vw, 52px); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin: 6px 0 16px; font-variant-numeric: tabular-nums; }
+  .out .row2 { display: flex; gap: 24px; flex-wrap: wrap; font-size: 15px; opacity: .92; }
+  .out .row2 b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .out .note { font-size: 13px; opacity: .75; margin-top: 18px; }
+
+  /* разбор условной детали */
+  .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .sheet-card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+  .sheet-card h3 { margin: 0 0 4px; font-size: 17px; }
+  .sheet-card .sub { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+  .sheet-card svg { width: 100%; height: auto; display: block; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 12px; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
+  .demo-table { grid-column: 1 / -1; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 8px 22px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 520px; }
+  th, td { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  tr.total td { font-weight: 700; color: var(--warn); }
+  .disclaimer { grid-column: 1 / -1; font-size: 13px; color: var(--muted); margin: 0; }
+
+  /* линейный раскрой */
+  .rod-card { grid-column: 1 / -1; }
+  .rod { margin: 6px 0 18px; }
+  .rod .cap { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: flex; justify-content: space-between; gap: 8px; }
+  .rod .cap span { color: var(--muted); font-weight: 400; }
+  .rod .track { display: flex; height: 34px; border-radius: 8px; overflow: hidden; background: #eef1f2; border: 1px solid #b5bfc5; }
+  .rod .seg { display: grid; place-items: center; font-size: 12px; color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden;
+    border-right: 2px solid #fff; transform: scaleX(0); transform-origin: left; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .rod .seg:last-child { border-right: 0; }
+  .rod .p { background: #9aa7af; } .rod .p2 { background: #2f8a83; } .rod .w { background: #f3d9c8; color: #7a3a14; }
+  .sheet-card.in .rod .seg { transform: none; }
+  @media (prefers-reduced-motion: reduce) { .rod .seg { transform: none !important; transition: none !important; } }
+
+  /* результаты */
+  .wins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .win { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 26px; display: flex; flex-direction: column; }
+  .win .num { font-size: clamp(34px, 4vw, 46px); font-weight: 800; color: var(--accent); line-height: 1.05; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .win .num small { font-size: .45em; font-weight: 700; letter-spacing: 0; }
+  .win .what { font-weight: 700; margin: 10px 0 8px; line-height: 1.35; }
+  .win p { margin: 0; color: var(--muted); font-size: 15px; }
+  .win .ba { display: block; margin-top: auto; padding-top: 16px; font-size: 14px; color: var(--muted); }
+  .win .ba b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .win .ba .arr { color: var(--accent-2); font-weight: 700; margin: 0 6px; }
+  .wins-note { font-size: 13px; color: var(--muted); margin: 14px 0 0; }
+  @media (max-width: 860px) { .wins { grid-template-columns: 1fr; } }
+
+  /* шаги */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; position: relative; }
+  .step { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; position: relative; }
+  .step .n {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff;
+    display: grid; place-items: center; font-weight: 800; margin-bottom: 14px;
+  }
+  .step b { display: block; font-size: 18px; margin-bottom: 4px; }
+  .step .when { display: inline-block; font-size: 13px; color: var(--accent); background: var(--accent-soft); padding: 2px 10px; border-radius: 99px; margin-bottom: 10px; }
+  .step p { margin: 0; color: var(--muted); font-size: 15px; }
+  .step.free { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  /* схема метода */
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin: 0 0 28px; position: relative; }
+  .flow .node { text-align: center; position: relative; padding: 0 6px; }
+  .flow .node .disc {
+    width: 84px; height: 84px; margin: 0 auto 12px; border-radius: 22px; background: var(--card);
+    border: 1px solid var(--line); display: grid; place-items: center; position: relative; z-index: 1;
+    box-shadow: 0 14px 28px -20px rgba(26,32,36,.45);
+  }
+  .flow .node.last .disc { background: var(--warn-soft); border-color: #efc9b1; }
+  .flow .node b { display: block; font-size: 16px; }
+  .flow .node small { display: block; color: var(--muted); font-size: 13px; line-height: 1.4; margin-top: 2px; }
+  .flow .node:not(:last-child)::after {
+    content: ""; position: absolute; top: 42px; left: calc(50% + 46px); right: calc(-50% + 46px); height: 2px;
+    background: repeating-linear-gradient(90deg, var(--accent-2) 0 8px, transparent 8px 14px);
+    background-size: 28px 2px; animation: flowdash 1.2s linear infinite;
+  }
+  @keyframes flowdash { to { background-position: 28px 0; } }
+  @media (max-width: 760px) {
+    .flow { grid-template-columns: 1fr; gap: 18px; }
+    .flow .node { display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; text-align: left; }
+    .flow .node .disc { width: 64px; height: 64px; margin: 0; border-radius: 18px; }
+    .flow .node:not(:last-child)::after { top: auto; bottom: -18px; left: 31px; right: auto; width: 2px; height: 18px;
+      background: repeating-linear-gradient(180deg, var(--accent-2) 0 6px, transparent 6px 10px); animation: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .flow .node::after { animation: none !important; } }
+
+  /* гарантия */
+  .guarantee {
+    display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center;
+    background: var(--card); border: 2px solid var(--accent); border-radius: 24px; padding: 34px 36px;
+    box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+  .guarantee .seal { width: 112px; height: 112px; }
+  .guarantee .seal .ring { transform-origin: 56px 56px; animation: spin 24s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .guarantee h2 { margin-bottom: 10px; }
+  .guarantee p { margin: 0 0 8px; font-size: 18px; }
+  .guarantee p.small { color: var(--muted); font-size: 15px; margin: 0; }
+  @media (max-width: 600px) {
+    .guarantee { grid-template-columns: 1fr; padding: 26px 22px; text-align: center; }
+    .guarantee .seal { margin: 0 auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { .guarantee .seal .ring { animation: none; } }
+
+  /* обо мне */
+  .about { display: grid; grid-template-columns: .85fr 1.15fr; gap: 48px; align-items: center; }
+  .photo { margin: 0; position: relative; }
+  .photo img { display: block; width: 100%; height: auto; border-radius: 24px; box-shadow: 0 30px 60px -36px rgba(26,32,36,.55); }
+  .photo figcaption {
+    position: absolute; left: 16px; right: 16px; bottom: 16px; background: rgba(255,255,255,.92);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 14px; padding: 12px 16px;
+  }
+  .photo figcaption b { display: block; font-size: 17px; }
+  .photo figcaption span { font-size: 13px; color: var(--muted); }
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+  @media (max-width: 860px) { .photo { max-width: 420px; margin: 0 auto 12px; } }
+  .fact { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+  .fact b { display: block; white-space: nowrap; font-size: 28px; color: var(--accent); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .fact > span { display: block; font-size: 14px; line-height: 1.4; color: var(--muted); margin-top: 6px; }
+  .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .skills span { font-size: 14px; background: var(--card); border: 1px solid var(--line); padding: 6px 12px; border-radius: 99px; }
+
+  /* финальный блок */
+  .final {
+    background: linear-gradient(135deg, var(--accent) 0%, #174a47 100%); color: #fff; border-radius: 24px;
+    padding: 48px; display: grid; grid-template-columns: 1.3fr .7fr; gap: 32px; align-items: center;
+  }
+  .final h2 { color: #fff; }
+  .final p { margin: 0; opacity: .9; font-size: 18px; }
+  .final ul { margin: 16px 0 0; padding: 0; list-style: none; }
+  .final li { padding-left: 28px; position: relative; margin: 8px 0; opacity: .95; }
+  .final li::before { content: ""; position: absolute; left: 0; top: 7px; width: 16px; height: 9px; border-left: 2.5px solid #9fe0d6; border-bottom: 2.5px solid #9fe0d6; transform: rotate(-45deg); }
+  .final .btn { background: #fff; color: var(--accent); box-shadow: none; width: 100%; text-align: center; }
+  .final .btn:hover { background: #eef7f5; }
+  .final .mail { display: block; text-align: center; color: #fff; opacity: .85; margin-top: 12px; font-size: 15px; }
+
+  footer { padding: 32px 0 40px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  /* змейка: маршрут металла через завод, едет за прокруткой */
+  .snake { display: none; }
+  @media (min-width: 1240px) {
+    .snake { display: block; position: absolute; left: 0; top: 0; width: 100%; z-index: 4; pointer-events: none; }
+    .snake svg.track { position: absolute; left: 0; top: 0; overflow: visible; }
+    #snakeBase { stroke: #d6d2c7; stroke-width: 3; fill: none; stroke-dasharray: 1 10; stroke-linecap: round; }
+    #snakeDone { stroke: var(--accent-2); stroke-width: 3.5; fill: none; stroke-linecap: round; }
+    .snake .st { position: absolute; left: 0; top: 0; width: 92px; margin: -26px 0 0 -46px; text-align: center; }
+    .snake .st .ico {
+      width: 52px; height: 52px; margin: 0 auto; border-radius: 15px; background: var(--card); border: 1px solid var(--line);
+      display: grid; place-items: center; opacity: .5; filter: grayscale(1); transition: opacity .4s, filter .4s, border-color .4s;
+    }
+    .snake .st .ico svg { width: 36px; height: 36px; }
+    .snake .st b { display: block; font-size: 11.5px; line-height: 1.2; font-weight: 600; color: var(--muted); margin-top: 5px; background: var(--bg); border-radius: 6px; padding: 1px 2px; }
+    .snake .st.on .ico { opacity: 1; filter: none; border-color: #cfe2de; }
+    .snake .st.on b { color: var(--accent); }
+    .snake .item {
+      position: absolute; left: 0; top: 0; width: 76px; height: 76px; margin: -38px 0 0 -38px; border-radius: 22px;
+      background: var(--card); border: 2px solid var(--accent-2); display: grid; place-items: center; z-index: 2;
+      box-shadow: 0 18px 34px -16px rgba(31,95,91,.55); will-change: transform;
+    }
+    .snake .item svg { display: none; width: 52px; height: 52px; }
+    .snake .item svg.on { display: block; animation: pop .35s cubic-bezier(.2,.9,.3,1.4); }
+    @keyframes pop { from { transform: scale(.5); opacity: 0; } }
+    .snake .spark { animation: spark .5s steps(2) infinite; }
+    @keyframes spark { 50% { opacity: .2; } }
+    .snake .spin { transform-origin: 20px 20px; animation: spin 2.4s linear infinite; }
+    .snake .spin2 { transform-origin: 31px 20px; animation: spin .8s linear infinite; }
+    .snake .drive { animation: drive 1s ease-in-out infinite alternate; }
+    @keyframes drive { to { transform: translateX(2px); } }
+    .snake .hoist { animation: hoist 1.6s ease-in-out infinite alternate; }
+    @keyframes hoist { from { transform: translateY(-2px); } to { transform: translateY(3px); } }
+    .snake .roll { animation: roll 1.2s ease-in-out infinite alternate; }
+    @keyframes roll { to { transform: translateY(4px); } }
+    .snake .push { animation: push 1s ease-in-out infinite alternate; }
+    @keyframes push { to { transform: translateX(3px); } }
+  }
+  .lineBar { position: fixed; z-index: 11; left: 0; right: 0; top: 64px; height: 3px; background: transparent; pointer-events: none; }
+  .lineBar i { display: block; height: 100%; width: 0; background: var(--accent-2); }
+  .lineBar span {
+    position: absolute; right: 10px; top: 7px; font-size: 11px; font-weight: 600; color: var(--accent);
+    background: rgba(247,246,242,.92); padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line);
+  }
+  @media (min-width: 1240px) { .lineBar { display: none; } }
+
+  /* появление при прокрутке */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  .d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; } .d3 { transition-delay: .24s; } .d4 { transition-delay: .32s; }
+
+  /* анимация раскроя */
+  .part { transform-box: fill-box; transform-origin: center; opacity: 0; transform: scale(.6); transition: opacity .5s, transform .5s cubic-bezier(.2,.9,.3,1.3); }
+  .sheet-card.in .part { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .part { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .bar i { transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  @media (max-width: 860px) {
+    nav a:not(.btn) { display: none; }
+    .hero, .calc, .demo, .about, .final { grid-template-columns: 1fr; }
+    .hero { padding-top: 36px; gap: 32px; }
+    .steps { grid-template-columns: 1fr; }
+    .final { padding: 30px 22px; }
+    section { padding: 44px 0; }
+  }
   @media (max-width: 480px) {
     body { font-size: 16px; }
     .lead { font-size: 17px; }
-    .offer { padding: 18px; }
-    .btn { display: block; text-align: center; margin: 8px 0; }
+    .hero .btn { display: block; text-align: center; margin: 0 0 10px; }
+    .calc .in, .calc .out { padding: 22px; }
+    .facts { grid-template-columns: 1fr 1fr; }
+    nav .btn { padding: 8px 12px; font-size: 14px; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header>
-    <div class="logo">Norma<span>Prom</span></div>
-    <a href="mailto:durnov.r@normaprom.ru">durnov.r@normaprom.ru</a>
-  </header>
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="logo" href="#">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+        <rect x="1" y="1" width="28" height="28" rx="8" fill="#1f5f5b"/>
+        <path d="M8 21V9l7 8 7-8v12" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <b>Norma<span>Prom</span></b>
+    </a>
+    <nav>
+      <a href="#leaks">Где потери</a>
+      <a href="#calc">Калькулятор</a>
+      <a href="#demo">Пример разбора</a>
+      <a href="#about">Обо мне</a>
+      <a href="tel:+79323098739">+7 932 309-87-39</a>
+      <a class="btn" href="#contact">Разбор бесплатно</a>
+    </nav>
+  </div>
+</header>
 
-  <h1>Считаю, сколько металла и часов теряет ваше производство — в рублях</h1>
-  <p class="lead">Роман Дурнов, технолог. Нормы расхода металла, раскрой, нормы времени и подготовка производства для заводов на 20–300 человек.</p>
+<div class="snake" id="snake" aria-hidden="true">
+  <svg class="track" id="snakeSvg"><path id="snakeBase"/><path id="snakeDone"/></svg>
+  <div class="item" id="snakeItem">
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h34" stroke-width="3"/><path d="M6 7l-3 28M6 7l3 28M34 7l-3 28M34 7l3 28M2 35h9M29 35h9"/><rect x="16" y="4.5" width="8" height="5" rx="1" fill="#1f5f5b"/><g class="hoist"><path d="M20 9.5v6"/><path d="M20 15.5l-6 5M20 15.5l6 5"/><g fill="#c9d1d6"><circle cx="15" cy="23" r="2.4"/><circle cx="20" cy="23" r="2.4"/><circle cx="25" cy="23" r="2.4"/><circle cx="17.5" cy="27.2" r="2.4"/><circle cx="22.5" cy="27.2" r="2.4"/></g></g></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="22" height="28" rx="3" fill="#eef1f2"/><path d="M14 6V4h10v2"/><path d="M13 14h12M13 19h12M13 24h6"/><path d="M22 27l3 3 6-7" stroke="#2f8a83" stroke-width="2.5"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 30h32M8 30v5M32 30v5"/><rect x="4" y="22" width="32" height="5" rx="2.5" fill="#c9d1d6"/><g class="roll"><rect x="4" y="13" width="32" height="5" rx="2.5" fill="#eef1f2"/></g></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="15" width="34" height="9" rx="4.5" fill="#eef1f2"/><path d="M14 12v15M26 12v15" stroke="#c0612b" stroke-dasharray="2 2"/><path d="M14 31h12M14 29v4M26 29v4"/></g><g class="spark" stroke="#c0612b" stroke-width="2" stroke-linecap="round"><path d="M26 8l3-4"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="18" width="16" height="9" rx="4.5" fill="#eef1f2"/><rect x="22" y="18" width="15" height="9" rx="4.5" fill="#eef1f2"/><path d="M20.5 5v9"/><path d="M18 5h5"/></g><g class="spark" stroke="#c0612b" stroke-width="2" stroke-linecap="round"><path d="M20.5 16v3M17 14l2 3M24 14l-2 3M20.5 30v4"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15h18l4 5-4 5H4z" fill="#eef1f2"/><g class="spin2"><circle cx="31" cy="20" r="6"/><path d="M31 14v12M25 20h12"/></g></g><g class="spark" stroke="#c0612b" stroke-width="2" stroke-linecap="round"><path d="M26 12l-2-3M26 28l-2 3"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="9" width="17" height="22" rx="3"/><path d="M24 15h9M24 19h9M24 23h6"/><g class="push"><rect x="3" y="16" width="11" height="8" rx="4" fill="#eef1f2"/><path d="M14 20h4m-2-2l2 2-2 2"/></g></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 34V20a12 12 0 0 1 12-12h14" stroke-width="7" stroke="#9aa7af"/><path d="M8 34V20a12 12 0 0 1 12-12h14" stroke-width="2" stroke="#eef1f2"/><path d="M4 34h8M34 4v8"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="18" width="16" height="9" rx="2" fill="#eef1f2"/><rect x="21" y="18" width="16" height="9" rx="2" fill="#eef1f2"/><path d="M26 4l-6 12"/></g><g class="spark" stroke="#c0612b" stroke-width="2" stroke-linecap="round"><path d="M20 17l-4-4M20 17l4-4M20 17h-6M20 17h6M20 17v-6"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g class="spin" stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="20" r="5"/><path d="M20 6v5M20 29v5M6 20h5M29 20h5M10 10l3.5 3.5M26.5 26.5L30 30M10 30l3.5-3.5M26.5 13.5L30 10"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="17" r="9"/><path d="M24 24l9 9"/><path d="M13 17l3 3 5-6" stroke="#2f8a83"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h14v8H6z" fill="#eef1f2"/><path d="M10 20v10h5V20M20 15h4"/></g><g class="spark" stroke="#2f8a83" stroke-width="2" stroke-linecap="round"><path d="M28 11l5-3M28 15h6M28 19l5 3"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l14-7 14 7v14l-14 7-14-7z" fill="#eef1f2"/><path d="M6 15l14 7 14-7M20 22v14"/><path d="M13 11.5l14 7" stroke="#2f8a83" stroke-width="2.5"/></g></svg>
+      <svg width="40" height="40" viewBox="0 0 40 40"><g class="drive" stroke="#1f5f5b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 26V13h20v13M23 17h7l5 5v4h-12"/><circle cx="10" cy="28" r="3"/><circle cx="28" cy="28" r="3"/><rect x="6" y="8" width="7" height="5" fill="#2f8a83" stroke="#2f8a83"/><rect x="14" y="8" width="7" height="5" fill="#2f8a83" stroke="#2f8a83"/></g></svg>
+      </div>
+</div>
+<div class="lineBar" aria-hidden="true"><i id="barFill"></i><span id="barLbl">Разгрузка краном</span></div>
 
-  <section class="offer">
-    <h2>Бесплатный разбор одного изделия</h2>
-    <p>Пришлите чертёж или dxf, вашу норму расхода металла и фактическое списание за квартал.</p>
-    <p>Через 2–3 дня покажу, сколько металла теряется на этом изделии в рублях за год, почему и что можно поправить. Без обязательств.</p>
-    <a class="btn" href="mailto:durnov.r@normaprom.ru?subject=Разбор%20изделия">Написать на почту</a>
+<main class="wrap">
+
+  <!-- первый экран -->
+  <div class="hero">
+    <div>
+      <span class="eyebrow reveal">Технолог · нормы металла и времени · ТПП</span>
+      <h1 class="reveal d1">Считаю, сколько металла и часов теряет ваше производство — <em>в рублях</em></h1>
+      <p class="lead reveal d2">Роман Дурнов, технолог. Нормы расхода металла, раскрой листа, трубы и проката, нормы времени и подготовка производства для заводов на 20–300 человек.</p>
+      <div class="reveal d3">
+        <a class="btn" href="#contact">Бесплатный разбор изделия</a>
+        <a class="btn ghost" href="#calc">Посчитать свои потери</a>
+      </div>
+    </div>
+
+    <div class="gauge reveal d2" id="gauge">
+      <h3>Одна деталь: норма против факта</h3>
+      <p class="sub">Металл на одно изделие, кг</p>
+      <div class="bar-row">
+        <div class="lbl"><span>Масса готовой детали</span><b>20,0</b></div>
+        <div class="bar"><i data-w="64"></i></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span>Норма в техпроцессе</span><b>22,0</b></div>
+        <div class="bar"><i class="n" data-w="71"></i></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span>Фактически уходит</span><b>31,0</b></div>
+        <div class="bar"><i class="f" data-w="100"></i></div>
+      </div>
+      <div class="gap">
+        <span>Не учтено в себестоимости<br>на 4 000 деталей в год</span>
+        <b><span class="count" data-to="3.2" data-dec="1">>3,2</span> млн ₽</b>
+      </div>
+      <div class="tag">Условный пример, расчёт — ниже, в разделе «Пример разбора»</div>
+    </div>
+  </div>
+
+  <!-- где теряются деньги -->
+  <section id="leaks">
+    <h2 class="reveal">Где обычно теряются деньги</h2>
+    <p class="sec-lead reveal d1">Это не воровство и не плохие рабочие. Это система норм, которую давно никто не пересчитывал.</p>
+    <div class="leaks">
+      <div class="leak reveal d1">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="3"/><circle cx="16.5" cy="12" r="2"/></svg></div>
+        <b>Норма по массе детали</b>
+        <p>Без раскроя, реза и остатков. В себестоимости одно, на складе другое.</p>
+      </div>
+      <div class="leak reveal d2">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 7l2 13h12l2-13"/><path d="M9 7V4h6v3"/></svg></div>
+        <b>Деловые остатки — в лом</b>
+        <p>Обрезки листа и проката не учитываются и не идут в следующие заказы.</p>
+      </div>
+      <div class="leak reveal d3">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></div>
+        <b>Время без наладки</b>
+        <p>На малых партиях наладка съедает часы, а цена детали занижена.</p>
+      </div>
+      <div class="leak reveal d4">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6"/></svg></div>
+        <b>Час по зарплате рабочего</b>
+        <p>Без станка, инструмента и цеха. Заказ выглядит прибыльным, а денег нет.</p>
+      </div>
+      <div class="leak reveal d4">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 14h6M9 18h4"/></svg></div>
+        <b>Запуск «как получится»</b>
+        <p>Новое изделие в цеху раньше норм и документов. Потом их пишут по факту.</p>
+      </div>
+    </div>
   </section>
 
-  <h2>Где обычно теряются деньги</h2>
-  <ul class="list">
-    <li>Норма металла посчитана по массе детали, без раскроя, реза и остатков.</li>
-    <li>Деловые остатки листа и проката не учитываются и уходят в лом.</li>
-    <li>Нормы времени без наладки — на малых партиях цена детали занижена.</li>
-    <li>Час работы считают по зарплате рабочего, без станка, инструмента и цеха.</li>
-    <li>Новое изделие запускают «как получится»: нормы и документы — потом.</li>
-  </ul>
+  <!-- калькулятор -->
+  <section id="calc">
+    <h2 class="reveal">Сколько стоит каждый процент перерасхода</h2>
+    <p class="sec-lead reveal d1">Подставьте свои цифры. Ничего не отправляется — расчёт идёт прямо в браузере.</p>
+    <div class="calc reveal d2">
+      <div class="in">
+        <div class="field">
+          <label for="tons">Металла в год, т <output id="tonsOut"></output></label>
+          <input type="range" id="tons" min="50" max="5000" step="50" value="600">
+          <small>Лист, труба, прокат — всё, что закупаете за год</small>
+        </div>
+        <div class="field">
+          <label for="price">Средняя цена, ₽ за тонну</label>
+          <input type="number" id="price" min="10000" max="1000000" step="1000" value="90000" inputmode="numeric">
+          <small>С доставкой, без НДС</small>
+        </div>
+        <div class="field">
+          <label for="pct">Перерасход против нормы <output id="pctOut"></output></label>
+          <input type="range" id="pct" min="1" max="20" step="1" value="5">
+          <small>Если не знаете — это и есть первый вопрос разбора</small>
+        </div>
+      </div>
+      <div class="out" aria-live="polite">
+        <div class="k">Уходит сверх нормы за год</div>
+        <div class="big" id="lossRub">—</div>
+        <div class="row2">
+          <div>в тоннах<b id="lossT">—</b></div>
+          <div>в месяц<b id="lossMonth">—</b></div>
+        </div>
+        <div class="note">Простая арифметика: тонны × цена × процент. Сколько из этого можно вернуть, показывает разбор.</div>
+      </div>
+    </div>
+  </section>
 
-  <h2>Как работаю</h2>
-  <ol class="steps">
-    <li><b>Разбор одного изделия</b><small>Бесплатно, 2–3 дня. Понятно, есть ли смысл идти дальше.</small></li>
-    <li><b>Диагностика 5–10 изделий</b><small>3–4 недели. Нормы против факта, раскрой, время. Отчёт: потери в рублях за год и первоочередные меры.</small></li>
-    <li><b>Наведение порядка</b><small>Нормы на номенклатуру, карты раскроя, маршруты, порядок подготовки производства. Обучаю ваших сотрудников, чтобы дальше всё работало без меня.</small></li>
-  </ol>
+  <!-- пример разбора -->
+  <section id="demo">
+    <h2 class="reveal">Как выглядит разбор: условная деталь</h2>
+    <p class="sec-lead reveal d1">Два примера: деталь из листа и заготовки из трубы. Тот же материал, те же детали — разный раскрой. Так же разбираю сортовой и фасонный прокат.</p>
+    <div class="demo">
+      <div class="sheet-card reveal d1">
+        <h3>Было: 6 колец на лист</h3>
+        <p class="sub">Середина колец уходит в отход</p>
+        <svg viewBox="0 0 300 150" role="img" aria-label="Раскрой листа: шесть колец, центры в отходе">
+          <rect x="1" y="1" width="298" height="148" rx="4" fill="#eef1f2" stroke="#b5bfc5"/>
+          <g class="parts-a">
+            <g class="part" style="transition-delay:.05s"><circle cx="50" cy="40" r="34" fill="#9aa7af"/><circle cx="50" cy="40" r="20" fill="#f3d9c8" stroke="#c0612b" stroke-dasharray="3 2"/></g>
+            <g class="part" style="transition-delay:.15s"><circle cx="150" cy="40" r="34" fill="#9aa7af"/><circle cx="150" cy="40" r="20" fill="#f3d9c8" stroke="#c0612b" stroke-dasharray="3 2"/></g>
+            <g class="part" style="transition-delay:.25s"><circle cx="250" cy="40" r="34" fill="#9aa7af"/><circle cx="250" cy="40" r="20" fill="#f3d9c8" stroke="#c0612b" stroke-dasharray="3 2"/></g>
+            <g class="part" style="transition-delay:.35s"><circle cx="50" cy="110" r="34" fill="#9aa7af"/><circle cx="50" cy="110" r="20" fill="#f3d9c8" stroke="#c0612b" stroke-dasharray="3 2"/></g>
+            <g class="part" style="transition-delay:.45s"><circle cx="150" cy="110" r="34" fill="#9aa7af"/><circle cx="150" cy="110" r="20" fill="#f3d9c8" stroke="#c0612b" stroke-dasharray="3 2"/></g>
+            <g class="part" style="transition-delay:.55s"><circle cx="250" cy="110" r="34" fill="#9aa7af"/><circle cx="250" cy="110" r="20" fill="#f3d9c8" stroke="#c0612b" stroke-dasharray="3 2"/></g>
+          </g>
+        </svg>
+        <div class="legend"><span><i style="background:#9aa7af"></i>деталь</span><span><i style="background:#f3d9c8;border:1px solid #c0612b"></i>отход</span><span><i style="background:#eef1f2;border:1px solid #b5bfc5"></i>лист</span></div>
+      </div>
+      <div class="sheet-card reveal d2">
+        <h3>Стало: 6 колец + 6 мелких деталей</h3>
+        <p class="sub">В центр колец вложены шайбы из той же номенклатуры</p>
+        <svg viewBox="0 0 300 150" role="img" aria-label="Раскрой листа: шесть колец, в центры вложены мелкие детали">
+          <rect x="1" y="1" width="298" height="148" rx="4" fill="#eef1f2" stroke="#b5bfc5"/>
+          <g class="part" style="transition-delay:.05s"><circle cx="50" cy="40" r="34" fill="#9aa7af"/><circle cx="50" cy="40" r="20" fill="#eef1f2"/><circle cx="50" cy="40" r="16" fill="#2f8a83"/></g>
+          <g class="part" style="transition-delay:.15s"><circle cx="150" cy="40" r="34" fill="#9aa7af"/><circle cx="150" cy="40" r="20" fill="#eef1f2"/><circle cx="150" cy="40" r="16" fill="#2f8a83"/></g>
+          <g class="part" style="transition-delay:.25s"><circle cx="250" cy="40" r="34" fill="#9aa7af"/><circle cx="250" cy="40" r="20" fill="#eef1f2"/><circle cx="250" cy="40" r="16" fill="#2f8a83"/></g>
+          <g class="part" style="transition-delay:.35s"><circle cx="50" cy="110" r="34" fill="#9aa7af"/><circle cx="50" cy="110" r="20" fill="#eef1f2"/><circle cx="50" cy="110" r="16" fill="#2f8a83"/></g>
+          <g class="part" style="transition-delay:.45s"><circle cx="150" cy="110" r="34" fill="#9aa7af"/><circle cx="150" cy="110" r="20" fill="#eef1f2"/><circle cx="150" cy="110" r="16" fill="#2f8a83"/></g>
+          <g class="part" style="transition-delay:.55s"><circle cx="250" cy="110" r="34" fill="#9aa7af"/><circle cx="250" cy="110" r="20" fill="#eef1f2"/><circle cx="250" cy="110" r="16" fill="#2f8a83"/></g>
+          <g class="part" style="transition-delay:.7s"><rect x="92" y="66" width="16" height="18" rx="2" fill="#c9d1d6" stroke="#8b979e"/><rect x="192" y="66" width="16" height="18" rx="2" fill="#c9d1d6" stroke="#8b979e"/></g>
+        </svg>
+        <div class="legend"><span><i style="background:#9aa7af"></i>кольцо</span><span><i style="background:#2f8a83"></i>вложенная деталь</span><span><i style="background:#c9d1d6;border:1px solid #8b979e"></i>деловой остаток</span></div>
+      </div>
 
-  <h2>Обо мне</h2>
-  <p>15 лет в технологической подготовке производства. Руководил технологическими подразделениями в крупной промышленной группе, запускал новое производство. Сварка, термообработка, механообработка, нормирование материалов и труда.</p>
-  <p class="note">Работаю удалённо и с выездом по Челябинской области. Данные клиента не передаю третьим лицам и не публикую без письменного согласия.</p>
+      <div class="demo-table reveal d1">
+        <table>
+          <thead>
+            <tr><th>Что считаем</th><th class="num">Норма</th><th class="num">Факт до</th><th class="num">После разбора</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Лист: металл на одно кольцо, кг</td><td class="num">22,0</td><td class="num">31,0</td><td class="num">25,0</td></tr>
+            <tr><td>Программа, шт. в год</td><td class="num">4 000</td><td class="num">4 000</td><td class="num">4 000</td></tr>
+            <tr><td>Металл в год, т</td><td class="num">88</td><td class="num">124</td><td class="num">100</td></tr>
+            <tr><td>Стоимость металла при 90 000 ₽/т, млн ₽</td><td class="num">7,9</td><td class="num">11,2</td><td class="num">9,0</td></tr>
+            <tr class="total"><td>Возвращается за год, млн ₽</td><td class="num"></td><td class="num"></td><td class="num">2,2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sheet-card rod-card reveal d1">
+        <h3>Труба: раскрой хлыста 12 000 мм</h3>
+        <p class="sub">Заготовки 3 500 мм. Остаток — в лом или в дело</p>
+        <div class="rod">
+          <div class="cap">Было <span>остаток 1 500 мм — в лом</span></div>
+          <div class="track">
+            <div class="seg p" style="flex:3500;transition-delay:.05s">3 500</div>
+            <div class="seg p" style="flex:3500;transition-delay:.2s">3 500</div>
+            <div class="seg p" style="flex:3500;transition-delay:.35s">3 500</div>
+            <div class="seg w" style="flex:1500;transition-delay:.5s">1 500</div>
+          </div>
+        </div>
+        <div class="rod">
+          <div class="cap">Стало <span>в остаток вложена деталь 1 400 мм из другого заказа</span></div>
+          <div class="track">
+            <div class="seg p" style="flex:3500;transition-delay:.15s">3 500</div>
+            <div class="seg p" style="flex:3500;transition-delay:.3s">3 500</div>
+            <div class="seg p" style="flex:3500;transition-delay:.45s">3 500</div>
+            <div class="seg p2" style="flex:1400;transition-delay:.6s">1 400</div>
+            <div class="seg w" style="flex:100;transition-delay:.7s"></div>
+          </div>
+        </div>
+        <div class="legend"><span><i style="background:#9aa7af"></i>заготовка</span><span><i style="background:#2f8a83"></i>деталь другого заказа</span><span><i style="background:#f3d9c8;border:1px solid #c0612b"></i>отход</span></div>
+      </div>
 
+      <p class="disclaimer reveal">Условные примеры: детали и цифры придуманы, чтобы показать метод. Это не результат конкретного клиента. На вашем изделии разбор покажет ваши цифры — больше или меньше.</p>
+    </div>
+  </section>
+
+  <!-- результаты -->
+  <section id="wins">
+    <h2 class="reveal">А это — не условно</h2>
+    <p class="sec-lead reveal d1">Результаты, которых я добился на прошлой работе в штате крупного завода. Без названий: данные работодателя не раскрываю.</p>
+    <div class="wins">
+      <div class="win reveal d1">
+        <div class="num">в <span class="count" data-to="3.5" data-dec="1">>3,5</span> раза</div>
+        <div class="what">Снизил трудоёмкость сварки стыка</div>
+        <p>Разработал и внедрил новую технологию сварки. Заказы пошли через производство быстрее, механические свойства соединения выросли.</p>
+        <div class="ba"><b>93,3</b><span class="arr">→</span><b>25,6</b> нормо-часа на стык</div>
+      </div>
+      <div class="win reveal d2">
+        <div class="num"><span class="count" data-to="30">>30</span>+ <small>млн ₽</small></div>
+        <div class="what">Вернул в производство неликвиды со склада</div>
+        <p>Сварочную проволоку и флюс, которые годами лежали мёртвым грузом, пустил в работу без остановки текущих заказов.</p>
+        <div class="ba"><b>12+ т</b> проволоки и <b>30+ т</b> флюса</div>
+      </div>
+      <div class="win reveal d3">
+        <div class="num"><span class="count" data-to="90">>90</span>+ <small>млн ₽</small></div>
+        <div class="what">Операционный эффект подразделения за 2 года</div>
+        <p>За счёт оптимизации процессов и управления ресурсами. Годовой план по эффекту выполнен на 100%.</p>
+        <div class="ba">2024–2025 годы, <b>87</b> человек в подчинении</div>
+      </div>
+    </div>
+    <p class="wins-note reveal">Рекомендации бывших руководителей — по запросу.</p>
+  </section>
+
+  <!-- как работаю -->
+  <section id="how">
+    <h2 class="reveal">Как работаю</h2>
+    <p class="sec-lead reveal d1">Сначала бесплатно на одном изделии. Дальше — только если цифры убедили.</p>
+    <div class="flow">
+      <div class="node reveal d1">
+        <div class="disc"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="28" height="30" rx="3"/><circle cx="20" cy="18" r="7"/><circle cx="20" cy="18" r="3"/><path d="M11 30h18M11 26h6"/></svg></div>
+        <div><b>Чертёж</b><small>деталь, материал, программа</small></div>
+      </div>
+      <div class="node reveal d2">
+        <div class="disc"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 32h24M12 32V20M20 32V12M28 32V24"/></svg></div>
+        <div><b>Норма</b><small>что заложено в техпроцесс</small></div>
+      </div>
+      <div class="node reveal d3">
+        <div class="disc"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="30" height="22" rx="2"/><circle cx="14" cy="20" r="6"/><circle cx="27" cy="16" r="4"/><rect x="23" y="23" width="8" height="5" rx="1"/></svg></div>
+        <div><b>Раскрой</b><small>лист, труба, прокат</small></div>
+      </div>
+      <div class="node reveal d4">
+        <div class="disc"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#1f5f5b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30l8-9 6 5 10-13"/><path d="M26 13h6v6"/></svg></div>
+        <div><b>Факт</b><small>сколько реально списали</small></div>
+      </div>
+      <div class="node last reveal d4">
+        <div class="disc"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#c0612b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 32V8h8a6 6 0 0 1 0 12h-11M12 26h12"/></svg></div>
+        <div><b>Потери в ₽</b><small>и что поправить первым</small></div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step free reveal d1">
+        <div class="n">1</div>
+        <span class="when">бесплатно · 2–3 дня</span>
+        <b>Разбор одного изделия</b>
+        <p>Чертёж, ваша норма и списание за квартал. Понятно, есть ли смысл идти дальше.</p>
+      </div>
+      <div class="step reveal d2">
+        <div class="n">2</div>
+        <span class="when">3–4 недели</span>
+        <b>Диагностика 5–10 изделий</b>
+        <p>Нормы против факта, раскрой, время. Отчёт: потери в рублях за год и первоочередные меры.</p>
+      </div>
+      <div class="step reveal d3">
+        <div class="n">3</div>
+        <span class="when">по объёму</span>
+        <b>Наведение порядка</b>
+        <p>Нормы на номенклатуру, карты раскроя, маршруты, порядок ТПП. Обучаю ваших людей, чтобы всё работало без меня.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- гарантия -->
+  <section id="guarantee">
+    <div class="guarantee reveal">
+      <svg class="seal" viewBox="0 0 112 112" aria-hidden="true">
+        <defs><path id="sealPath" d="M56 56 m-42 0 a42 42 0 1 1 84 0 a42 42 0 1 1 -84 0"/></defs>
+        <circle cx="56" cy="56" r="54" fill="#e6f0ee"/>
+        <g class="ring"><text font-size="10.5" font-weight="700" letter-spacing="2.2" fill="#1f5f5b"><textPath href="#sealPath">ГАРАНТИЯ РЕЗУЛЬТАТА · ГАРАНТИЯ РЕЗУЛЬТАТА ·</textPath></text></g>
+        <circle cx="56" cy="56" r="30" fill="#1f5f5b"/>
+        <path d="M42 57l9 9 19-20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <h2>Не найду потерь — верну деньги</h2>
+        <p>Если диагностика не найдёт потерь больше её стоимости за год, верну деньги полностью.</p>
+        <p class="small">Условие простое: вы даёте данные, которые нужны для расчёта, — нормы, списание, чертежи. Первый разбор одного изделия бесплатный в любом случае.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- обо мне -->
+  <section id="about">
+    <div class="about">
+      <figure class="photo reveal d1">
+        <img src="roman.jpg" width="660" height="825" alt="Роман Дурнов, технолог" loading="lazy">
+        <figcaption><b>Роман Дурнов</b><span>технолог, нормирование и подготовка производства</span></figcaption>
+      </figure>
+      <div>
+        <h2 class="reveal">Обо мне</h2>
+        <p class="reveal d1">10 лет в технологии: от техника-технолога до руководителя технологического управления на 87 человек в крупной промышленной группе. Сам считал нормы и раскрой, писал техпроцессы, нормировал труд, запускал новую продукцию.</p>
+        <p class="reveal d2" style="color:var(--muted)">Работаю удалённо и с выездом по Челябинской области. Данные клиента не передаю третьим лицам и не публикую без письменного согласия.</p>
+        <div class="skills reveal d2">
+          <span>Нормы расхода металла</span><span>Раскрой листа, трубы, проката</span><span>Нормы времени</span><span>Сварка</span><span>Термообработка</span><span>Механообработка</span><span>Подготовка производства</span>
+        </div>
+        <div class="facts">
+          <div class="fact reveal d1"><b><span class="count" data-to="10">>10</span> лет</b><span>в технологии и подготовке производства</span></div>
+          <div class="fact reveal d2"><b>2–3 дня</b><span>на бесплатный разбор изделия</span></div>
+          <div class="fact reveal d3"><b>20–300</b><span>человек — размер заводов, с которыми работаю</span></div>
+          <div class="fact reveal d4"><b>0 ₽</b><span>стоит первый шаг</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- контакт -->
+  <section id="contact">
+    <div class="final reveal">
+      <div>
+        <h2>Бесплатный разбор одного изделия</h2>
+        <p>Пришлите на почту:</p>
+        <ul>
+          <li>чертёж или dxf одного изделия;</li>
+          <li>вашу норму расхода металла;</li>
+          <li>фактическое списание за квартал.</li>
+        </ul>
+        <p style="margin-top:16px">Через 2–3 дня покажу, сколько теряется на этом изделии в рублях за год, почему и что поправить. Без обязательств.</p>
+        <p style="margin-top:10px;font-weight:600">Дальше — диагностика с гарантией: не найду потерь больше её стоимости — верну деньги.</p>
+      </div>
+      <div>
+        <a class="btn" href="mailto:durnov.r@normaprom.ru?subject=Разбор%20изделия">Написать на почту</a>
+        <a class="mail" href="mailto:durnov.r@normaprom.ru">durnov.r@normaprom.ru</a>
+        <a class="mail" href="tel:+79323098739">+7 932 309-87-39</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="wrap">
   <footer>
-    Роман Дурнов · <a href="mailto:durnov.r@normaprom.ru">durnov.r@normaprom.ru</a>
+    <span>Роман Дурнов · технолог, нормирование и подготовка производства</span>
+    <span><a href="mailto:durnov.r@normaprom.ru">durnov.r@normaprom.ru</a> · <a href="tel:+79323098739">+7 932 309-87-39</a></span>
   </footer>
-
 </div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fmt = new Intl.NumberFormat('ru-RU');
+
+  // тень шапки при прокрутке
+  var top = document.getElementById('top');
+  window.addEventListener('scroll', function () { top.classList.toggle('scrolled', window.scrollY > 8); }, { passive: true });
+
+  // счётчики
+  function countUp(el) {
+    var to = parseFloat(el.dataset.to), dec = parseInt(el.dataset.dec || '0', 10);
+    var show = function (v) { el.textContent = v.toLocaleString('ru-RU', { minimumFractionDigits: dec, maximumFractionDigits: dec }); };
+    if (reduce) { show(to); return; }
+    var t0 = null, dur = 1400;
+    function step(t) {
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+      show(to * e);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // появление блоков
+  function activate(el) {
+    el.classList.add('in');
+    el.querySelectorAll('.bar i').forEach(function (b) { b.style.width = b.dataset.w + '%'; });
+    el.querySelectorAll('.count').forEach(countUp);
+  }
+  var items = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { activate(en.target); io.unobserve(en.target); } });
+    }, { threshold: 0.15 });
+    items.forEach(function (el) { io.observe(el); });
+  } else {
+    items.forEach(activate);
+  }
+
+  // змейка: маршрут металла через завод, едет за прокруткой
+  var stages = ['Разгрузка краном', 'Входной контроль', 'Раскатка', 'Разметка', 'Резка', 'Снятие фаски', 'Запуск в производство', 'Изготовление детали', 'Сварка', 'Мехобработка', 'Контроль ОТК', 'Покраска', 'Упаковка', 'Отгрузка'];
+  var snake = document.getElementById('snake'), svg = document.getElementById('snakeSvg'),
+      base = document.getElementById('snakeBase'), done = document.getElementById('snakeDone'),
+      item = document.getElementById('snakeItem'), icons = item.querySelectorAll('svg'),
+      barFill = document.getElementById('barFill'), barLbl = document.getElementById('barLbl'),
+      sts = [], total = 0, samples = [], cur = -1, ticking = false;
+  stages.forEach(function (name, i) {
+    var d = document.createElement('div'); d.className = 'st';
+    var ic = document.createElement('div'); ic.className = 'ico'; ic.appendChild(icons[i].cloneNode(true));
+    var b = document.createElement('b'); b.textContent = name;
+    d.appendChild(ic); d.appendChild(b); snake.insertBefore(d, item); sts.push(d);
+  });
+  function docTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
+  function rounded(pts, r) {
+    var d = 'M' + pts[0][0] + ' ' + pts[0][1];
+    for (var i = 1; i < pts.length - 1; i++) {
+      var a = pts[i - 1], p = pts[i], c = pts[i + 1];
+      var l1 = Math.hypot(p[0] - a[0], p[1] - a[1]), l2 = Math.hypot(c[0] - p[0], c[1] - p[1]), rr = Math.min(r, l1 / 2, l2 / 2);
+      d += ' L' + (p[0] - (p[0] - a[0]) / l1 * rr) + ' ' + (p[1] - (p[1] - a[1]) / l1 * rr);
+      d += ' Q' + p[0] + ' ' + p[1] + ' ' + (p[0] + (c[0] - p[0]) / l2 * rr) + ' ' + (p[1] + (c[1] - p[1]) / l2 * rr);
+    }
+    var z = pts[pts.length - 1];
+    return d + ' L' + z[0] + ' ' + z[1];
+  }
+  function build() {
+    if (getComputedStyle(snake).display === 'none') { total = 0; return; }
+    var main = document.querySelector('main'), mr = main.getBoundingClientRect();
+    var L = mr.left - 34, R = mr.right + 34;
+    var blocks = [document.querySelector('.hero')].concat([].slice.call(main.querySelectorAll(':scope > section')));
+    var pts = [[L, docTop(blocks[0]) + 40]], side = L;
+    for (var i = 0; i < blocks.length - 1; i++) {
+      var y = docTop(blocks[i + 1]);
+      pts.push([side, y]); side = side === L ? R : L; pts.push([side, y]);
+    }
+    pts.push([side, docTop(blocks[blocks.length - 1]) + blocks[blocks.length - 1].offsetHeight - 30]);
+    var H = document.documentElement.scrollHeight;
+    snake.style.height = H + 'px'; svg.setAttribute('width', document.documentElement.clientWidth); svg.setAttribute('height', H);
+    var d = rounded(pts, 40); base.setAttribute('d', d); done.setAttribute('d', d);
+    total = done.getTotalLength(); done.style.strokeDasharray = total; samples = [];
+    for (var s = 0; s <= total; s += 6) { var pt = done.getPointAtLength(s); samples.push([s, pt.x, pt.y]); }
+    sts.forEach(function (st, i) {
+      var p = done.getPointAtLength(total * i / (stages.length - 1));
+      st.style.transform = 'translate(' + p.x + 'px,' + p.y + 'px)';
+    });
+    cur = -1; move();
+  }
+  function move() {
+    ticking = false;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+    barFill.style.width = (p * 100) + '%';
+    var st;
+    if (total) {
+      var target = window.scrollY + window.innerHeight * (0.25 + 0.75 * p), lo = 0, hi = samples.length - 1;
+      while (lo < hi) { var mid = (lo + hi) >> 1; if (samples[mid][2] < target) lo = mid + 1; else hi = mid; }
+      var sm = p >= 0.999 ? samples[samples.length - 1] : samples[lo], len = p >= 0.999 ? total : sm[0];
+      var pt = p >= 0.999 ? done.getPointAtLength(total) : { x: sm[1], y: sm[2] };
+      item.style.transform = 'translate(' + pt.x + 'px,' + pt.y + 'px)';
+      done.style.strokeDashoffset = total - len;
+      st = Math.min(Math.floor(len / (total / (stages.length - 1)) + 0.02), stages.length - 1);
+    } else {
+      st = Math.min(Math.round(p * (stages.length - 1)), stages.length - 1);
+    }
+    if (st !== cur) {
+      cur = st;
+      icons.forEach(function (ic, i) { ic.classList.toggle('on', i === st); });
+      sts.forEach(function (d, i) { d.classList.toggle('on', i <= st); });
+      barLbl.textContent = stages[st];
+    }
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(move); } }, { passive: true });
+  var rb; window.addEventListener('resize', function () { clearTimeout(rb); rb = setTimeout(build, 120); });
+  window.addEventListener('load', build);
+  build();
+
+  // калькулятор
+  var tons = document.getElementById('tons'), price = document.getElementById('price'), pct = document.getElementById('pct');
+  function calc() {
+    var t = +tons.value || 0, p = +price.value || 0, k = (+pct.value || 0) / 100;
+    document.getElementById('tonsOut').textContent = fmt.format(t);
+    document.getElementById('pctOut').textContent = pct.value + ' %';
+    var lt = t * k, rub = lt * p;
+    document.getElementById('lossRub').textContent = rub >= 1e6 ? (rub / 1e6).toLocaleString('ru-RU', { maximumFractionDigits: 1 }) + ' млн ₽' : fmt.format(Math.round(rub)) + ' ₽';
+    document.getElementById('lossT').textContent = fmt.format(Math.round(lt)) + ' т';
+    document.getElementById('lossMonth').textContent = fmt.format(Math.round(rub / 12 / 1000)) + ' тыс. ₽';
+  }
+  [tons, price, pct].forEach(function (i) { i.addEventListener('input', calc); });
+  calc();
+})();
+</script>
 </body>
 </html>
