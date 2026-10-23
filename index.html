@@ -760,7 +760,7 @@
       base = document.getElementById('snakeBase'), done = document.getElementById('snakeDone'),
       item = document.getElementById('snakeItem'), icons = item.querySelectorAll('svg'),
       barFill = document.getElementById('barFill'), barLbl = document.getElementById('barLbl'),
-      sts = [], total = 0, samples = [], cur = -1, ticking = false;
+      sts = [], total = 0, samples = [], anchors = [], cur = -1, ticking = false;
   stages.forEach(function (name, i) {
     var d = document.createElement('div'); d.className = 'st';
     var ic = document.createElement('div'); ic.className = 'ico'; ic.appendChild(icons[i].cloneNode(true));
@@ -785,7 +785,7 @@
     var L = mr.left - 34, R = mr.right + 34;
     var blocks = [document.querySelector('.hero')].concat([].slice.call(main.querySelectorAll(':scope > section')));
     var pts = [[L, docTop(blocks[0]) + 40]], side = L;
-    for (var i = 0; i < blocks.length - 1; i++) {
+    for (var i = 0; i < blocks.length - 1; i += 2) {
       var y = docTop(blocks[i + 1]);
       pts.push([side, y]); side = side === L ? R : L; pts.push([side, y]);
     }
@@ -794,7 +794,21 @@
     snake.style.height = H + 'px'; svg.setAttribute('width', document.documentElement.clientWidth); svg.setAttribute('height', H);
     var d = rounded(pts, 40); base.setAttribute('d', d); done.setAttribute('d', d);
     total = done.getTotalLength(); done.style.strokeDasharray = total; samples = [];
-    for (var s = 0; s <= total; s += 6) { var pt = done.getPointAtLength(s); samples.push([s, pt.x, pt.y]); }
+    for (var s = 0; s <= total + 3; s += 3) { var pt = done.getPointAtLength(Math.min(s, total)); samples.push([Math.min(s, total), pt.x, pt.y]); }
+    // опорные точки «прокрутка → место на змейке»: каждый горизонтальный участок
+    // проезжается за отрезок прокрутки B вокруг промежутка между блоками
+    var gaps = [];
+    for (var j = 1; j < pts.length - 1; j += 2) gaps.push(pts[j][1]);
+    var yS = pts[0][1], yE = pts[pts.length - 1][1];
+    anchors = [[0, yS]];
+    gaps.forEach(function (gy, gi) {
+      var before = gy - (gi ? gaps[gi - 1] : yS), after = (gi < gaps.length - 1 ? gaps[gi + 1] : yE) - gy;
+      var B = Math.min(800, before * 0.6, after * 0.6), first = -1, last = -1;
+      samples.forEach(function (sm, k) { if (Math.abs(sm[2] - gy) < 0.6) { if (first < 0) first = k; last = k; } });
+      if (first < 0) return;
+      anchors.push([samples[first][0], gy - B / 2]); anchors.push([samples[last][0], gy + B / 2]);
+    });
+    anchors.push([total, yE]);
     sts.forEach(function (st, i) {
       var p = done.getPointAtLength(total * i / (stages.length - 1));
       st.style.transform = 'translate(' + p.x + 'px,' + p.y + 'px)';
@@ -808,10 +822,20 @@
     barFill.style.width = (p * 100) + '%';
     var st;
     if (total) {
-      var target = window.scrollY + window.innerHeight * (0.25 + 0.75 * p), lo = 0, hi = samples.length - 1;
-      while (lo < hi) { var mid = (lo + hi) >> 1; if (samples[mid][2] < target) lo = mid + 1; else hi = mid; }
-      var sm = p >= 0.999 ? samples[samples.length - 1] : samples[lo], len = p >= 0.999 ? total : sm[0];
-      var pt = p >= 0.999 ? done.getPointAtLength(total) : { x: sm[1], y: sm[2] };
+      var target = window.scrollY + window.innerHeight * (0.32 + 0.68 * p), len = total;
+      if (target <= anchors[0][1]) len = 0;
+      for (var q = 1; q < anchors.length; q++) {
+        if (target <= anchors[q][1]) {
+          var A = anchors[q - 1], Bn = anchors[q];
+          len = A[0] + (Bn[0] - A[0]) * (target - A[1]) / Math.max(Bn[1] - A[1], 1); break;
+        }
+      }
+      // смесь: равномерная скорость по всей змейке + привязка поворотов к промежуткам между блоками
+      var lin = total * Math.min(Math.max((target - anchors[0][1]) / (anchors[anchors.length - 1][1] - anchors[0][1]), 0), 1);
+      len = lin + (len - lin) * 0.6;
+      if (p >= 0.999) len = total;
+      len = Math.min(Math.max(len, 0), total);
+      var pt = done.getPointAtLength(len);
       item.style.transform = 'translate(' + pt.x + 'px,' + pt.y + 'px)';
       done.style.strokeDashoffset = total - len;
       st = Math.min(Math.floor(len / (total / (stages.length - 1)) + 0.02), stages.length - 1);
